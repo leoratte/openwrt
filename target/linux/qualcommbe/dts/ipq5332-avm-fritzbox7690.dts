@@ -3,6 +3,8 @@
 /dts-v1/;
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 #include "ipq5332.dtsi"
 
 / {
@@ -11,6 +13,60 @@
 
 	aliases {
 		serial0 = &blsp1_uart0;
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		wlan {
+			label = "wlan";
+			gpios = <&tlmm 0x32 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RFKILL>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&tlmm 0x17 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+
+		dect {
+			label = "dect";
+			gpios = <&tlmm 0x22 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_PHONE>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power: led_power {
+			function = LED_FUNCTION_POWER;
+			gpios = <&tlmm 4 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_wlan: led_wlan {
+			function = LED_FUNCTION_WLAN;
+			gpios = <&tlmm 3 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_fon_dect: led_fon_dect {
+			gpios = <&tlmm 6 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_connect: led_connect {
+			gpios = <&tlmm 0 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_info_normal: led_info_normal {
+			function = LED_FUNCTION_STATUS;
+			gpios = <&tlmm 7 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_info_error: led_info_error {
+			function = LED_FUNCTION_FAULT;
+			gpios = <&tlmm 2 GPIO_ACTIVE_HIGH>;
+		};
 	};
 };
 
