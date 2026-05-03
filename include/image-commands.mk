@@ -493,7 +493,7 @@ endef
 define Build/fit-avm
 	$(call Build/fit-its-avm,$(1))
 	$(eval dtb=$(basename $(word 2,$(1))))
-	$(STAGING_DIR_HOST)/bin/lzma e $(dtb) -lc3 -lp0 -pb2 $(dtb).lzma
+	$(if $(dtb),$(STAGING_DIR_HOST)/bin/lzma e $(dtb) -lc3 -lp0 -pb2 $(dtb).lzma)
 	$(call Build/fit-image,$(1))
 endef
 

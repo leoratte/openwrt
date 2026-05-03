@@ -17,6 +17,7 @@ ipq50xx_setup_interfaces()
 	glinet,gl-b3000)
 		ucidef_set_interfaces_lan_wan "lan1 lan2" "wan"
 		;;
+	avm,fritzbox-4050|\
 	cmcc,mr3000d-ci|\
 	linksys,mx2000|\
 	linksys,mx5500|\
@@ -40,9 +41,31 @@ ipq50xx_setup_interfaces()
 	esac
 }
 
+ipq50xx_setup_macs()
+{
+	local board="$1"
+	local lan_mac=""
+	local wan_mac=""
+	local label_mac=""
+
+	case "$board" in
+	avm,fritzbox-4050)
+		local tffsdev=$(find_mtd_chardev "nand-tffs")
+		wan_mac=$(/usr/bin/fritz_tffs_nand -b -d $tffsdev -n macdsl)
+		lan_mac=$(/usr/bin/fritz_tffs_nand -b -d $tffsdev -n maca)
+		label_mac=$lan_mac
+		;;
+	esac
+
+	[ -n "$lan_mac" ] && ucidef_set_interface_macaddr "lan" $lan_mac
+	[ -n "$wan_mac" ] && ucidef_set_interface_macaddr "wan" $wan_mac
+	[ -n "$label_mac" ] && ucidef_set_label_macaddr $label_mac
+}
+
 board_config_update
 board=$(board_name)
 ipq50xx_setup_interfaces $board
+ipq50xx_setup_macs $board
 board_config_flush
 
 exit 0

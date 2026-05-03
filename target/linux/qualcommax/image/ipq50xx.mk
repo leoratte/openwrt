@@ -1,6 +1,11 @@
 DTS_DIR := $(DTS_DIR)/qcom
 DEVICE_VARS += BOOT_SCRIPT
 
+define Build/avm-header
+	$(TOPDIR)/scripts/fit-add-avm-header.sh $@ > $@.new
+	mv $@.new $@
+endef
+
 define Build/mstc-header
 	$(eval version=$(word 1,$(1)))
 	$(eval hdrlen=$(if $(word 2,$(1)),$(word 2,$(1)),0x400))
@@ -86,6 +91,24 @@ define Device/elecom_wrc-x3000gst2
 		ipq-wifi-elecom_wrc-x3000gs2
 endef
 TARGET_DEVICES += elecom_wrc-x3000gst2
+
+define Device/avm_fritzbox-4050
+	$(call Device/FitImageLzma)
+	DEVICE_VENDOR := AVM
+	DEVICE_MODEL := fritzbox-4050
+	DEVICE_DTS_CONFIG := maple_HW287_config_0
+	KERNEL_LOADADDR := 0x41208000
+	DEVICE_DTS_LOADADDR := 0x42559000
+	SOC := ipq5018
+	KERNEL = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma | avm-header
+	KERNEL_INITRAMFS = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma with-initrd | avm-header
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	IMAGE_SIZE := 38400k
+	NAND_SIZE := 128m
+	DEVICE_PACKAGES =: fritz-tffs-nand fritz-caldata -uboot-envtools
+endef
+TARGET_DEVICES += avm_fritzbox-4050
 
 define Device/glinet_gl-b3000
 	$(call Device/FitImage)
