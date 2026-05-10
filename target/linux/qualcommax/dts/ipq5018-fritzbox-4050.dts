@@ -44,6 +44,14 @@
 			linux,code = <KEY_WPS_BUTTON>;
 		};
 	};
+
+	reg_usb_vbus: regulator-usb-vbus {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&tlmm 45 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &blsp1_uart1 {
@@ -210,10 +218,26 @@
 		drive-strength = <8>;
 		bias-disable;
 	};
+/*
+	usp_pwr_en_pinmux {
+		pins = "gpio45";
+		drive-strength = <8>;
+		bias-disable;
+	};
+*/
 };
 
 &usb {
 	status = "okay";
+};
+
+&usbphy0 {
+	status = "okay";
+	vdd-supply = <&reg_usb_vbus>;
+};
+
+&usb_dwc {
+	dr_mode = "host";
 };
 
 &sleep_clk {
