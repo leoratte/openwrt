@@ -106,6 +106,7 @@
 
 			port@6 {
 				reg = <6>;
+				label = "cpu";
 				phy-mode = "sgmii";
 				ethernet = <&dp2>;
 				qca,sgmii-enable-pll;
