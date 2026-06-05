@@ -114,7 +114,7 @@ define Device/avm_fritzbox-4050
 	PAGESIZE := 2048
 	IMAGE_SIZE := 38400k
 	NAND_SIZE := 128m
-	DEVICE_PACKAGES =: fritz-tffs-nand fritz-caldata -uboot-envtools
+	DEVICE_PACKAGES =: fritz-tffs-nand fritz-caldata -uboot-envtools kmod-spi-gpio kmod-gpio-nxp-74hc164
 endef
 TARGET_DEVICES += avm_fritzbox-4050
 
