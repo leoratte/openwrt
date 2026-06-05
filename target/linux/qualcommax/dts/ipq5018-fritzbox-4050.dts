@@ -14,6 +14,10 @@
 	compatible = "avm,fritzbox-4050", "qcom,ipq5018";
 
 	aliases {
+		led-boot = &power_green;
+		led-failsafe = &info_red;
+		led-running = &power_green;
+		led-upgrade = &info_red;
 		serial0 = &blsp1_uart1;
 	};
 
@@ -54,6 +58,65 @@
 		gpios = <&tlmm 45 GPIO_ACTIVE_HIGH>;
 		regulator-boot-on;
 		enable-active-high;
+	};
+
+	led_spi {
+		compatible = "spi-gpio";
+		pinctrl-0 = <&spi_gpio_pins>;
+		pinctrl-names = "default";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		sck-gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
+		mosi-gpios = <&tlmm 18 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&tlmm 40 GPIO_ACTIVE_LOW>;
+		num-chipselects = <1>;
+
+		led_gpio: led_gpio@0 {
+			compatible = "fairchild,74hc595";
+			reg = <0>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			registers-number = <1>;
+			spi-max-frequency = <1000000>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		info_red: info_red {
+			label = "red:info";
+			gpios = <&led_gpio 0 GPIO_ACTIVE_HIGH>;
+		};
+
+		info {
+			label = "green:info";
+			gpios = <&led_gpio 1 GPIO_ACTIVE_HIGH>;
+		};
+
+		wps {
+			function = LED_FUNCTION_WPS;
+			color = <LED_COLOR_ID_GREEN>;
+			gpios = <&led_gpio 2 GPIO_ACTIVE_HIGH>;
+		};
+
+		fon {
+			label = "green:fon";
+			gpios = <&led_gpio 3 GPIO_ACTIVE_HIGH>;
+		};
+
+		wlan {
+			function = LED_FUNCTION_WLAN;
+			color = <LED_COLOR_ID_GREEN>;
+			gpios = <&led_gpio 4 GPIO_ACTIVE_HIGH>;
+		};
+
+		power_green: power {
+			function = LED_FUNCTION_POWER;
+			color = <LED_COLOR_ID_GREEN>;
+			gpios = <&led_gpio 5 GPIO_ACTIVE_HIGH>;
+		};
 	};
 };
 
@@ -215,6 +278,13 @@
 		function = "blsp0_uart0";
 		drive-strength = <8>;
 		bias-disable;
+	};
+
+	spi_gpio_pins: spi-gpio-pins {
+		pins = "gpio18", "gpio40", "gpio46";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-up;
 	};
 };
 
