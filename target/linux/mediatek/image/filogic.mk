@@ -3104,20 +3104,6 @@ define Device/tplink_eap683-lr
 endef
 TARGET_DEVICES += tplink_eap683-lr
 
-define Device/tplink_re6000xd
-  DEVICE_VENDOR := TP-Link
-  DEVICE_MODEL := RE6000XD
-  DEVICE_DTS := mt7986b-tplink-re6000xd
-  DEVICE_DTS_DIR := ../dts
-  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
-  UBINIZE_OPTS := -E 5
-  BLOCKSIZE := 128k
-  PAGESIZE := 2048
-  IMAGE_SIZE := 51200k
-  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-endef
-TARGET_DEVICES += tplink_re6000xd
-
 define Device/tplink_f65-v1
   DEVICE_VENDOR := TP-Link
   DEVICE_MODEL := F65
@@ -3150,6 +3136,20 @@ define Device/tplink_fr365-v1
   DEVICE_PACKAGES := fitblk kmod-sfp kmod-usb3 kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
 endef
 TARGET_DEVICES += tplink_fr365-v1
+
+define Device/tplink_re6000xd
+  DEVICE_VENDOR := TP-Link
+  DEVICE_MODEL := RE6000XD
+  DEVICE_DTS := mt7986b-tplink-re6000xd
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  IMAGE_SIZE := 51200k
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += tplink_re6000xd
 
 define Device/tplink_tl-xdr-common
   DEVICE_VENDOR := TP-Link
