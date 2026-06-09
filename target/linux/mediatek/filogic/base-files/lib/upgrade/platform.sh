@@ -212,6 +212,7 @@ platform_do_upgrade() {
 	snr,snr-cpe-ax2|\
 	teralink,tl3020-256mb|\
 	tplink,be450-ubi|\
+	tplink,er7412-m2|\
 	tplink,tl-7dr7230*|\
 	tplink,tl-7dr7250*|\
 	tplink,tl-xdr4288|\
@@ -463,6 +464,7 @@ platform_check_image() {
 	routerich,ax3000-ubootmod|\
 	teralink,tl3020-256mb|\
 	tplink,be450-ubi|\
+	tplink,er7412-m2|\
 	tplink,tl-7dr7230*|\
 	tplink,tl-7dr7250*|\
 	tplink,tl-xdr4288|\

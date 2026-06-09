@@ -242,6 +242,10 @@ mediatek_setup_interfaces()
 	tenda,be12-pro)
 		ucidef_set_interfaces_lan_wan "lan3 lan4 lan5 eth1" eth2
 		;;
+	tplink,er7412-m2)
+		ucidef_set_interfaces_lan_wan "port2 port3 port4 port5 port6 \
+			port7 port8 port9 port10 port11 port12" "port1"
+		;;
 	tplink,fr365-v1)
 		ucidef_set_interfaces_lan_wan "port1 port3 port4 port5 port6" "port2"
 		;;
