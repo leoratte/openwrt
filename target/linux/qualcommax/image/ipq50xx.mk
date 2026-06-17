@@ -6,6 +6,13 @@ define Build/avm-header
 	mv $@.new $@
 endef
 
+define Build/avm-fit-container
+	$(TOPDIR)/scripts/mkits-avm-container.sh \
+		$@.its $@ maple_HW287_config_1 $(KERNEL_LOADADDR)
+	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $@.its $@.new
+	@mv $@.new $@
+endef
+
 define Build/mstc-header
 	$(eval version=$(word 1,$(1)))
 	$(eval hdrlen=$(if $(word 2,$(1)),$(word 2,$(1)),0x400))
@@ -101,7 +108,8 @@ define Device/avm_fritzbox-4050
 	DEVICE_DTS_LOADADDR := 0x42559000
 	SOC := ipq5018
 	KERNEL = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma | avm-header
-	KERNEL_INITRAMFS = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma with-initrd | avm-header
+	KERNEL_INITRAMFS = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma with-initrd | \
+		avm-header | avm-fit-container | avm-header
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	IMAGE_SIZE := 38400k
