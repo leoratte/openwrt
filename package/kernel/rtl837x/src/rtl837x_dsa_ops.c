@@ -1946,8 +1946,7 @@ static int rtl837x_port_fdb_dump(struct dsa_switch *ds, int port,
 
 		ret = rtk_l2_addr_next_get(READMETHOD_NEXT_L2UCSPA, port,
 					   &address, &l2);
-		if (ret == RT_ERR_L2_ENTRY_NOTFOUND ||
-		    ret == RT_ERR_L2_L2UNI_PARAM)
+		if (ret == RT_ERR_L2_ENTRY_NOTFOUND)
 			break;
 		if (ret != RT_ERR_OK)
 			return rtl837x_to_errno(ret);
@@ -1969,6 +1968,7 @@ static int rtl837x_port_fdb_dump(struct dsa_switch *ds, int port,
 
 	return 0;
 }
+
 static const struct dsa_switch_ops rtl837x_dsa_ops = {
 	.get_tag_protocol = rtl837x_get_tag_protocol,
 	.devlink_info_get = rtl837x_devlink_info_get,
