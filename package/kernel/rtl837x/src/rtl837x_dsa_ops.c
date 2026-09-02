@@ -1950,6 +1950,10 @@ static int rtl837x_port_fdb_dump(struct dsa_switch *ds, int port,
 			break;
 		if (ret != RT_ERR_OK)
 			return rtl837x_to_errno(ret);
+		if (l2.port != port || is_multicast_ether_addr(l2.mac.octet)) {
+			address++;
+			continue;
+		}
 
 		/* tag_8021q VIDs are this driver's own transport, not
 		 * something the bridge configured, so report them as 0 the
