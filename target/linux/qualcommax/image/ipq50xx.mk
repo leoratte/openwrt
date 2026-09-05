@@ -60,7 +60,7 @@ define Device/avm_fritzbox-4050
 	DEVICE_PACKAGES := ath11k-firmware-ipq5018-qcn6122 \
 		ipq-wifi-avm_fritzbox-4050 \
 		fritz-caldata -uboot-envtools \
-		kmod-spi-gpio kmod-gpio-nxp-74hc164
+		kmod-gpio-avm-74hc595
 endef
 TARGET_DEVICES += avm_fritzbox-4050
 

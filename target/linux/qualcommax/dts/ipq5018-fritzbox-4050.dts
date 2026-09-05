@@ -59,7 +59,7 @@
 		regulator-boot-on;
 		enable-active-high;
 	};
-
+/*
 	led_spi {
 		compatible = "spi-gpio";
 		pinctrl-0 = <&spi_gpio_pins>;
@@ -80,6 +80,17 @@
 			registers-number = <1>;
 			spi-max-frequency = <1000000>;
 		};
+	};
+*/
+	led_gpio: avm-gpio-74hc595 {
+		compatible = "avm,74hc595";
+		gpio-controller;
+		#gpio-cells = <2>;
+
+		shcp-gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
+		ds-gpios   = <&tlmm 18 GPIO_ACTIVE_HIGH>;
+		stcp-gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
+		num-registers = <1>;
 	};
 
 	leds {
