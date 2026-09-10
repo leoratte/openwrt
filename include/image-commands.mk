@@ -256,6 +256,29 @@ define Build/append-uImage-fakehdr
 	cat $@.fakehdr >> $@
 endef
 
+define Build/fit-avm
+	$(call Build/fit-its,$(1))
+	$(SED) '/algo = "crc32";/a\value = <0>;' \
+		-e '/hash-2/,+2d' \
+		-e 's/compression = "none";/compression = "lzma";/g' \
+		$@.its
+	$(eval dtb=$(basename $(word 2,$(1))))
+	$(if $(dtb),$(STAGING_DIR_HOST)/bin/lzma e $(dtb) -lc3 -lp0 -pb2 $(dtb).lzma)
+	$(call Build/fit-image,$(1))
+endef
+
+define Build/avm-header
+	$(TOPDIR)/scripts/fit-add-avm-header.sh $@ > $@.new
+	mv $@.new $@
+endef
+
+define Build/avm-container
+	$(TOPDIR)/scripts/mkits-avm-container.sh \
+		$@.its $@ $(AVM_CONTAINER_CONFIG) $(KERNEL_LOADADDR)
+	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f $@.its $@.new
+	@mv $@.new $@
+endef
+
 define Build/buffalo-dhp-image
 	$(STAGING_DIR_HOST)/bin/mkdhpimg $@ $@.new
 	mv $@.new $@
