@@ -7,8 +7,8 @@
 #include <dt-bindings/clock/qcom,ipq5332-nsscc.h>
 
 / {
-	model = "AVM FRITZ!Box 4630";
-	compatible = "avm,fritzbox4630", "qcom,ipq5332";
+	model = "FRITZ! FRITZ!Box 4630";
+	compatible = "fritz,fritzbox4630", "qcom,ipq5332";
 
 	aliases {
 		serial0 = &blsp1_uart0;
@@ -21,6 +21,37 @@
 	chosen {
 		bootargs = "console=ttyMSM0,115200n8 clk_ignore_unused";
 		stdout-path = "serial0:115200n8";
+	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+        	tzapp:tzapp@49600000 {  /* TZAPPS */
+			reg = <0x0 0x49600000 0x0 0x00600000>;
+			no-map;
+		};
+
+		m3_dump: m3-dump@4d400000 {
+			reg = <0x0 0x4d400000 0x0 0x100000>;
+			no-map;
+		};
+
+		q6_caldb: q6-caldb@4d500000 {
+			reg = <0x0 0x4d500000 0x0 0x500000>;
+			no-map;
+		};
+
+		mlo_mem: mlo-global-mem@4db00000 {
+			reg = <0x0 0x4db00000 0x0 0x01200000>;
+			no-map;
+		};
+
+		qcn9274_host_ddr: qcn9274-host-ddr@4ed00000 {
+			reg = <0x0 0x4ed00000 0x0 0x03200000>;
+			no-map;
+		};
 	};
 
 	keys {
@@ -112,6 +143,10 @@
 	clock-frequency = <24000000>;
 };
 
+&usbphy0 {
+	status = "okay";
+};
+
 &usb {
 	status = "okay";
 
@@ -130,6 +165,10 @@
 
 	vdd-supply = <&usb_vbus_5v>;
 
+	status = "okay";
+};
+
+&mdio {
 	status = "okay";
 };
 
@@ -216,4 +255,22 @@
 			};
 		};
 	};
+};
+
+&wifi0 {
+	firmware-name = "ath12k/IPQ5332/hw1.0/q6_fw1.mdt",
+			"ath12k/IPQ5332/hw1.0/iu_fw.mdt";
+	memory-region = <&q6_region>, <&m3_dump>, <&q6_caldb>, <&mlo_mem>;
+	memory-region-names = "q6-region", "m3-dump", "q6-caldb", "mlo-global-mem";
+	qcom,bdf-address-offset = <0x0c00000>;
+	qcom,board-id = <18>;
+	qcom,legacy-userpd-bootinfo;
+	qcom,rproc = <&q6v5_wcss>;
+	qcom,wsi-controller;
+	status = "okay";
+};
+
+&q6v5_wcss {
+	firmware-name = "ath12k/IPQ5332/hw1.0/q6_fw0.mdt";
+	status = "okay";
 };

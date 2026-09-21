@@ -25,8 +25,8 @@ define Build/gl-be9300-factory
 	rm -f $@.its
 endef
 
-define Device/avm_fritzbox4630
-	DEVICE_VENDOR := AVM
+define Device/fritz_fritzbox4630
+	DEVICE_VENDOR := FRITZ!
 	DEVICE_MODEL := FRITZ!Box 4630
 	DEVICE_DTS_CONFIG := miami_HW307_config_1
 	AVM_CONTAINER_CONFIG := miami_HW307_config_1
@@ -34,7 +34,7 @@ define Device/avm_fritzbox4630
 #	DEVICE_DTS_LOADADDR := 0x4136e000
 	DEVICE_DTS_LOADADDR := 0x42000000
 	SOC := ipq5332
-	SUPPORTED_DEVICES += avm,fritzbox4630
+	SUPPORTED_DEVICES += fritz,fritzbox4630
 	KERNEL := kernel-bin | lzma | \
 		fit-avm lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb.lzma | avm-header
 	KERNEL_INITRAMFS := kernel-bin | lzma | \
@@ -43,8 +43,10 @@ define Device/avm_fritzbox4630
 	KERNEL_INITRAMFS_SUFFIX := .itb
 	IMAGES := sysupgrade.itb
 	IMAGE/sysupgrade.itb := append-kernel | append-metadata
+	DEVICE_PACKAGES := -uboot-envtools \
+		kmod-ath12k ath12k-firmware-ipq5332
 endef
-TARGET_DEVICES += avm_fritzbox4630
+TARGET_DEVICES += fritz_fritzbox4630
 
 define Device/ubnt_u7-pro-xgs
 	DEVICE_VENDOR := Ubiquiti
