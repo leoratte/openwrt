@@ -121,9 +121,9 @@
 		realtek,aldps-enable;
 	};
 
-	switch0: switch@1e {
+	switch0: switch@1f {
 		compatible = "mediatek,mt7531";
-		reg = <30>;
+		reg = <31>;
 		reset-gpios = <&pio 5 GPIO_ACTIVE_HIGH>;
 		interrupt-controller;
 		#interrupt-cells = <1>;
@@ -131,9 +131,9 @@
 		interrupts = <66 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
-	switch1: switch@1f {
+	switch1: switch@1e {
 		compatible = "mediatek,mt7531";
-		reg = <31>;
+		reg = <30>;
 		reset-gpios = <&pio 15 GPIO_ACTIVE_HIGH>;
 		interrupt-controller;
 		#interrupt-cells = <1>;
