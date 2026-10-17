@@ -178,7 +178,8 @@ platform_check_image() {
 
 platform_pre_upgrade() {
 	case "$(board_name)" in
-	avm,fritzbox-4050)
+	avm,fritzbox-4050|\
+	avm,fritzbox-7510)
 		fritzbox_remove_oem_ubi_volumes
 		;;
 	xiaomi,ax6000)
@@ -189,7 +190,8 @@ platform_pre_upgrade() {
 
 platform_do_upgrade() {
 	case "$(board_name)" in
-	avm,fritzbox-4050)
+	avm,fritzbox-4050|\
+	avm,fritzbox-7510)
 		sync
 		CI_KERNPART="fit0"
 		nand_do_flash_file "$1" || nand_do_upgrade_failed

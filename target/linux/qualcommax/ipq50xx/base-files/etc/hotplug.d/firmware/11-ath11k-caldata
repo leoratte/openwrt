@@ -9,7 +9,8 @@ board=$(board_name)
 case "$FIRMWARE" in
 "ath11k/IPQ5018/hw1.0/cal-ahb-c000000.wifi.bin")
 	case "$board" in
-	avm,fritzbox-4050)
+	avm,fritzbox-4050|\
+	avm,fritzbox-7510)
 		/usr/bin/fritz_cal_extract -i 44 -s 0x480800 -e 0x207 \
 			-l 131072 -o /lib/firmware/$FIRMWARE \
 			$(find_mtd_chardev "urlader")
