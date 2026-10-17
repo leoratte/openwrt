@@ -78,6 +78,24 @@ define Device/avm_fritzbox-4050
 endef
 TARGET_DEVICES += avm_fritzbox-4050
 
+define Device/avm_fritzbox-7510
+	$(call Device/FitImageLzma)
+	DEVICE_VENDOR := AVM
+	DEVICE_MODEL := FRITZ!Box 7510
+	DEVICE_DTS_CONFIG := maple_HW271_config_2
+	DEVICE_DTS_LOADADDR := 0x43000000
+	SOC := ipq5018
+	KERNEL = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma | avm-header | \
+		check-size $$(KERNEL_SIZE)
+	KERNEL_INITRAMFS = kernel-bin | lzma | fit-avm lzma $$(KDIR)/image-$$(DEVICE_DTS).dtb.lzma with-initrd | \
+		avm-header
+	KERNEL_SIZE := 8192k
+	DEVICE_PACKAGES := ath11k-firmware-ipq5018 \
+		ipq-wifi-avm_fritzbox-7510 \
+		fritz-caldata -uboot-envtools
+endef
+TARGET_DEVICES += avm_fritzbox-7510
+
 define Device/cmcc_mr3000d-ci
 	$(call Device/FitImageLzma)
 	$(call Device/UbiFit)

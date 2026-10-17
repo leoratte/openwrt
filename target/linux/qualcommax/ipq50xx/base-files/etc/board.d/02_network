@@ -7,6 +7,9 @@ ipq50xx_setup_interfaces()
 {
 	local board="$1"
 	case $board in
+	avm,fritzbox-7510)
+		ucidef_set_interface_lan "eth0"
+		;;
 	elecom,wrc-x3000gs2|\
 	elecom,wrc-x3000gst2|\
 	iodata,wn-dax3000gr|\
@@ -73,6 +76,11 @@ ipq50xx_setup_macs()
 		[ -n "$wan_mac" ] && ucidef_set_interface_macaddr "wan" $wan_mac
 		[ -n "$lan_mac" ] && ucidef_set_interface_macaddr "lan" $lan_mac
 		[ -n "$lan_mac" ] && ucidef_set_network_device_mac "eth1" "$lan_mac"
+		[ -n "$lan_mac" ] && ucidef_set_label_macaddr "$lan_mac"
+		;;
+	avm,fritzbox-7510)
+		lan_mac=$(cat /proc/device-tree/chosen/maca)
+		[ -n "$lan_mac" ] && ucidef_set_interface_macaddr "lan" $lan_mac
 		[ -n "$lan_mac" ] && ucidef_set_label_macaddr "$lan_mac"
 		;;
 	mercusys,mr80x-v2|\
