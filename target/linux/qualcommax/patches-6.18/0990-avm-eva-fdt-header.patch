@@ -1,0 +1,59 @@
+Index: linux-6.18.55/arch/arm64/kernel/setup.c
+===================================================================
+--- linux-6.18.55.orig/arch/arm64/kernel/setup.c
++++ linux-6.18.55/arch/arm64/kernel/setup.c
+@@ -27,6 +27,8 @@
+ #include <linux/proc_fs.h>
+ #include <linux/memblock.h>
+ #include <linux/of_fdt.h>
++#include <linux/libfdt.h>
++#include <linux/swab.h>
+ #include <linux/efi.h>
+ #include <linux/psci.h>
+ #include <linux/sched/task.h>
+@@ -167,6 +169,36 @@ static void __init smp_build_mpidr_hash(
+ 		pr_warn("Large number of MPIDR hash buckets detected\n");
+ }
+ 
++/*
++ * AVM's EVA bootloader rewrites the DTB it passes on and writes the
++ * size_dt_strings and size_dt_struct header fields in the wrong byte order
++ * (size_dt_struct additionally holds off_dt_strings instead of a size).
++ * fdt_check_header() then fails with -FDT_ERR_TRUNCATED and the kernel stops
++ * before it can print anything. Recognise exactly that signature and
++ * recompute both sizes from the offsets; any other DTB is left alone.
++ * This runs while the DTB is still mapped writable.
++ */
++static void __init fixup_avm_eva_fdt_header(void *dt_virt)
++{
++	struct fdt_header *h = dt_virt;
++	u32 total = fdt32_to_cpu(h->totalsize);
++	u32 off_rsv = fdt32_to_cpu(h->off_mem_rsvmap);
++	u32 off_struct = fdt32_to_cpu(h->off_dt_struct);
++	u32 off_strings = fdt32_to_cpu(h->off_dt_strings);
++
++	if (!dt_virt || fdt_check_header(dt_virt) != -FDT_ERR_TRUNCATED)
++		return;
++	if (!(off_rsv < off_struct && off_struct < off_strings &&
++	      off_strings <= total))
++		return;
++	/* signature: the strings size is correct but byte swapped */
++	if (swab32(fdt32_to_cpu(h->size_dt_strings)) != total - off_strings)
++		return;
++
++	h->size_dt_struct = cpu_to_fdt32(off_strings - off_struct);
++	h->size_dt_strings = cpu_to_fdt32(total - off_strings);
++}
++
+ static void __init setup_machine_fdt(phys_addr_t dt_phys)
+ {
+ 	int size = 0;
+@@ -176,6 +208,8 @@ static void __init setup_machine_fdt(phy
+ 	if (dt_virt)
+ 		memblock_reserve(dt_phys, size);
+ 
++	fixup_avm_eva_fdt_header(dt_virt);
++
+ 	/*
+ 	 * dt_virt is a fixmap address, hence __pa(dt_virt) can't be used.
+ 	 * Pass dt_phys directly.
